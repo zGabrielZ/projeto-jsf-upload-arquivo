@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Bem vindo</title>
+</h:head>
+<h:body>
+
+	<h1 align="center">Upload de arquivo</h1>
+
+	<h:form id="frmUpload" enctype="multipart/form-data">
+
+
+
+		<div align="center" id="frmUpload">
+
+			<p:messages id="msg" autoUpdate="true"></p:messages>
+
+			<p:selectOneRadio id="radioButtonArquivos" value="#{arquivoUploadController.arquivoEscolhido}"
+				unselectable="true">
+				<f:selectItems value="#{arquivoUploadController.arquivosSelecionados}" />
+				<f:ajax render="@form" ></f:ajax>
+			</p:selectOneRadio>
+
+
+			<div id="msg" style="margin-top:10px;" >
+				<p:outputLabel value="Arquivo TXT" rendered="#{arquivoUploadController.arquivoEscolhido eq 1}" />
+				<p:outputLabel value="Arquivo CSV" rendered="#{arquivoUploadController.arquivoEscolhido eq 2}" />
+			</div>
+			
+			<div id="msg2" style="margin-top:10px;" >
+				<h:panelGroup rendered="#{arquivoUploadController.arquivoEscolhido eq 1}" >
+					<h2>Modelo : </h2>
+					<p>Teste;teste@gmail.com;</p>
+					<p>Teste 2;teste2@gmail.com;</p>
+					<p>Teste 3;teste3@gmail.com;</p>
+				</h:panelGroup>
+			</div>
+
+
+			<h:panelGrid columns="2">
+
+				<p:outputLabel value="Descrição :" id="descricao" />
+				<p:inputText
+					value="#{arquivoUploadController.arquivoUpload.descricao}"
+					required="true" requiredMessage="É necessário inserir descrição"
+					for="descricao" />
+
+				<p:outputLabel value="Arquivo :" id="arquivo" />
+				<h:inputFile for="arquivo" required="true" rendered="#{arquivoUploadController.arquivoEscolhido eq 1 or arquivoUploadController.arquivoEscolhido eq 2 or arquivoUploadController.arquivoEscolhido eq 3}"
+					requiredMessage="É necessário inserir o arquivo"
+					value="#{arquivoUploadController.uploadArquivoDados}" />
+
+				<p:outputLabel />
+				<p:commandButton ajax="false"
+					action="#{arquivoUploadController.upload}" value="Upload"
+					update="@form" process="@this" />
+
+			</h:panelGrid>
+		</div>		
+	</h:form>
+	
+	<h:form id="frmDataTableUsu" style="margin-top:50px;" >
+		<p:dataTable value="#{arquivoUploadController.listagemUsuarios}" var="usuario" rendered="#{not empty arquivoUploadController.listagemUsuarios}"
+			rows="5" paginator="true" paginatorPosition="bottom" rowsPerPageTemplate="5, 10, 25, 50, 100"
+				paginatorAlwaysVisible="false" >
+				
+				
+				<f:facet name="header">
+            		Usuários
+        		</f:facet>
+				
+				<p:column style="width:150px;">
+					<f:facet name="header">Nome</f:facet>
+					<h:outputText value="#{usuario.nome}" />
+				</p:column>
+
+				<p:column style="width:200px;">
+					<f:facet name="header">E-mail</f:facet>
+					<h:outputText value="#{usuario.email}" />
+				</p:column>
+			
+		</p:dataTable>
+	</h:form>
+	
+	<h:form id="frmDataTableArq" style="margin-top:50px;">
+		<p:dataTable value="#{arquivoUploadController.arquivoUploads}" var="arq" rendered="#{not empty arquivoUploadController.arquivoUploads}"
+			rows="5" paginator="true" paginatorPosition="bottom" rowsPerPageTemplate="5, 10, 25, 50, 100"
+				paginatorAlwaysVisible="false" >
+				
+				<f:facet name="header">
+            		Upload de arquivos
+        		</f:facet>
+				
+				<p:column style="width:150px;">
+					<f:facet name="header">Descrição</f:facet>
+					<h:outputText value="#{arq.descricao}" />
+				</p:column>
+
+				<p:column style="width:200px;">
+					<f:facet name="header">Download</f:facet>
+					<h:commandLink immediate="true" actionListener="#{arquivoUploadController.download}" value="Download" 
+					 	 >
+						<f:param name="downloadArquivo"  value="#{arq.id}" />
+					</h:commandLink>
+				</p:column>
+			
+		</p:dataTable>
+	</h:form>
+
+
+</h:body>
+</html>
